@@ -1,7 +1,7 @@
 {
   "name": "nycdata",
   "version": "0.2.0",
-  "description": "Developer-first CLI for discovering, inspecting, and querying NYC Open Data.",
+  "description": "Developer-first CLI and MCP server for live NYC Open Data.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -36,6 +36,14 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HT224/nycdata.git"
+  },
+  "homepage": "https://github.com/HT224/nycdata#readme",
+  "bugs": {
+    "url": "https://github.com/HT224/nycdata/issues"
   },
   "keywords": [
     "nyc",
