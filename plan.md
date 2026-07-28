@@ -2,14 +2,14 @@
 
 ## Objective
 
-Build an open-source, developer-first CLI that shortens the path from “I have an NYC project idea” to a verified live-data integration. NYC Open Data remains the source of truth; the CLI handles discovery, schema inspection, safe querying, profiling, and eventually application scaffolding.
+Build an open-source, developer-first CLI and MCP server that shorten the path from “I have an NYC project idea” to a verified live-data integration. NYC Open Data remains the source of truth; the shared core handles discovery, schema inspection, safe querying, and profiling.
 
 ## Product principles
 
 1. **Live by default** — query NYC's APIs rather than copying datasets into a proprietary store.
 2. **Inspect before generating** — never invent field names or assume one row equals one entity.
 3. **Transparent queries** — show or expose the SoQL sent to Socrata.
-4. **Composable core** — CLI and future MCP server use the same client and domain logic.
+4. **Composable core** — CLI and MCP server use the same client and domain logic.
 5. **Bounded operations** — profiling and samples must avoid accidental full-dataset downloads.
 6. **Credential-safe** — optional Socrata tokens come from the environment and never enter generated source.
 
@@ -41,11 +41,20 @@ Build an open-source, developer-first CLI that shortens the path from “I have 
 - Report sample null rate, sample cardinality, inferred date/geographic fields, and example values.
 - Clearly label sample-derived statistics.
 
+### MCP adapter
+
+- Expose `search_datasets`, `describe_dataset`, `query_dataset`, and `profile_dataset`.
+- Use local stdio transport for broad client compatibility.
+- Keep tools read-only and bound query/profile sizes.
+- Reuse the same client and domain logic as the CLI.
+
 ## Architecture
 
 ```text
-src/cli.ts
-  command parsing and presentation
+src/cli.ts                  src/mcp.ts
+human/CI interface          coding-agent interface
+          \                 /
+           shared nycdata core
        |
 src/client.ts
   catalog, metadata, and SODA HTTP access
@@ -56,10 +65,10 @@ SoQL construction  bounded analysis      terminal/JSON/CSV
 NYC Socrata APIs (live source of truth)
 ```
 
-The public exports in `src/index.ts` form the future shared core for:
+The public exports in `src/index.ts` form the shared core for:
 
-- an MCP server;
-- a Next.js/TypeScript scaffold generator;
+- the CLI and MCP server;
+- future deterministic type and client generators;
 - saved query definitions;
 - TypeScript/Zod and Python/Pydantic type generation.
 
@@ -68,13 +77,14 @@ The public exports in `src/index.ts` form the future shared core for:
 1. Scaffold TypeScript package, executable, tests, linting, and docs.
 2. Implement HTTP client, error handling, and optional app-token support.
 3. Implement `search`, `describe`, `query`, and `profile`.
-4. Verify commands against restaurant inspections, 311, and crash datasets.
-5. Publish repository after security review and explicit approval.
-6. Add `scaffold` and MCP adapters after the core commands prove useful.
+4. Add and verify the MCP adapter through a real stdio client.
+5. Verify commands against restaurant inspections, 311, and crash datasets.
+6. Publish the repository after security review and explicit approval.
+7. Add deterministic type/client generators after repeated use clarifies the right interface.
 
-## Definition of done for v0.1
+## Definition of done for v0.2
 
-- All four MVP commands work against live NYC Open Data.
+- All four MVP commands and MCP tools work against live NYC Open Data.
 - Query construction and data normalization have automated tests.
 - Lint, typecheck, tests, and production build pass.
 - README contains install instructions and copy-paste examples.
@@ -85,5 +95,5 @@ The public exports in `src/index.ts` form the future shared core for:
 - Generic support for every Socrata city.
 - Full local data mirroring.
 - Natural-language-to-SoQL generation.
-- Application templates and MCP transport.
-- Publishing to npm, GitHub, or another external system without approval.
+- Full application templates.
+- Publishing to npm without a final packaging and compatibility review.

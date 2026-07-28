@@ -1,19 +1,21 @@
 # nycdata
 
-A developer-first CLI for discovering, inspecting, querying, and profiling **live NYC Open Data**.
+A developer-first CLI and MCP server for discovering, inspecting, querying, and profiling **live NYC Open Data**.
 
 `nycdata` sits above NYC's Socrata APIs. It does not mirror datasets or replace NYC as the source of truth. It makes the path from project idea to verified API integration faster and less error-prone.
 
+Repository: https://github.com/HT224/nycdata
+
 ## Status
 
-Early MVP (`0.1.0`). Implemented commands:
+Early MVP (`0.2.0`). Implemented CLI commands:
 
 - `search`
 - `describe`
 - `query`
 - `profile`
 
-Planned next: app scaffolding, generated types, saved queries, and an MCP adapter backed by the same core.
+The MCP server exposes the same capabilities to coding agents. Planned next: generated types, saved queries, and deterministic client generation.
 
 ## Requirements
 
@@ -28,6 +30,7 @@ npm install
 npm run build
 npm link
 nycdata --help
+nycdata-mcp
 ```
 
 For development without linking:
@@ -95,6 +98,45 @@ nycdata profile erm2-nwe9 --sample-size 250 --format json
 
 Profiles are intentionally bounded. Row counts are queried live; null rates and cardinality are explicitly sample-derived so the CLI does not download an entire dataset by accident.
 
+## MCP server
+
+`nycdata-mcp` runs a local stdio MCP server with four read-only tools:
+
+- `search_datasets`
+- `describe_dataset`
+- `query_dataset`
+- `profile_dataset`
+
+Each tool uses the same live NYC Open Data client as the CLI. Query results are capped at 1,000 rows per call, profile samples are capped at 1,000 rows, and proximity radii are capped at 50 km.
+
+After building the package, configure an MCP client to run:
+
+```json
+{
+  "mcpServers": {
+    "nycdata": {
+      "command": "node",
+      "args": ["/absolute/path/to/nycdata/dist/mcp.js"],
+      "env": {
+        "SOCRATA_APP_TOKEN": ""
+      }
+    }
+  }
+}
+```
+
+The token entry is optional. The server writes protocol messages to stdout and diagnostics to stderr.
+
+### Agent workflow
+
+An agent can:
+
+1. search for candidate datasets;
+2. inspect the chosen dataset's actual fields and row semantics;
+3. run a small live query;
+4. profile data quality;
+5. build application code from verified results instead of guessed schemas.
+
 ## Architecture
 
 The CLI is a thin presentation layer over reusable TypeScript modules:
@@ -103,6 +145,7 @@ The CLI is a thin presentation layer over reusable TypeScript modules:
 - `query.ts` — dataset validation and SoQL URL construction
 - `profile.ts` — bounded data-quality analysis
 - `format.ts` — table, JSON, and CSV output
+- `mcp.ts` — stdio MCP transport and safe tool schemas
 - `index.ts` — public core exports for future CLI/MCP/scaffold consumers
 
 See [plan.md](./plan.md) for scope, principles, milestones, and deferred work.
@@ -111,9 +154,10 @@ See [plan.md](./plan.md) for scope, principles, milestones, and deferred work.
 
 ```bash
 npm run check
+npm run test:live-mcp
 ```
 
-This runs lint, TypeScript checks, tests, and the production build.
+`check` runs lint, TypeScript checks, unit/in-memory MCP tests, and the production build. `test:live-mcp` launches the built stdio server through a real MCP client and calls all four tools against live NYC data.
 
 ## Data source
 

@@ -1,10 +1,11 @@
 {
   "name": "nycdata",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Developer-first CLI for discovering, inspecting, and querying NYC Open Data.",
   "type": "module",
   "bin": {
-    "nycdata": "./dist/cli.js"
+    "nycdata": "./dist/cli.js",
+    "nycdata-mcp": "./dist/mcp.js"
   },
   "files": [
     "dist",
@@ -17,6 +18,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint .",
     "test": "vitest run",
+    "test:live-mcp": "tsx test/live-mcp-client.ts",
     "check": "npm run lint && npm run typecheck && npm test && npm run build",
     "prepublishOnly": "npm run check"
   },
@@ -28,12 +30,15 @@
     "open-data",
     "socrata",
     "soql",
-    "cli"
+    "cli",
+    "mcp"
   ],
   "license": "MIT",
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
     "cli-table3": "^0.6.5",
-    "commander": "^15.0.0"
+    "commander": "^15.0.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
