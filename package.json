@@ -3,6 +3,18 @@
   "version": "0.2.0",
   "description": "Developer-first CLI for discovering, inspecting, and querying NYC Open Data.",
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./mcp": {
+      "types": "./dist/mcp.d.ts",
+      "import": "./dist/mcp.js"
+    }
+  },
   "bin": {
     "nycdata": "./dist/cli.js",
     "nycdata-mcp": "./dist/mcp.js"

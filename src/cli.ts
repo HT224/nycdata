@@ -6,6 +6,7 @@ import { formatMetadata, formatProfile, formatRows } from "./format.js";
 import { profileDataset } from "./profile.js";
 import { parsePositiveInteger } from "./query.js";
 import { NycDataError, type OutputFormat, type QueryOptions } from "./types.js";
+import { VERSION } from "./version.js";
 
 const program = new Command();
 const client = new NycDataClient({
@@ -21,7 +22,7 @@ function formatOption(): Option {
 program
   .name("nycdata")
   .description("Discover, inspect, query, and profile live NYC Open Data.")
-  .version("0.1.0")
+  .version(VERSION)
   .showSuggestionAfterError();
 
 program

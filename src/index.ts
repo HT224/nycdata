@@ -15,3 +15,4 @@ export type {
   SearchItem,
 } from "./types.js";
 export { NycDataError } from "./types.js";
+export { VERSION } from "./version.js";

@@ -7,6 +7,7 @@ import * as z from "zod/v4";
 import { NycDataClient } from "./client.js";
 import { profileDataset } from "./profile.js";
 import type { QueryOptions } from "./types.js";
+import { VERSION } from "./version.js";
 
 const jsonText = (value: unknown) => ({
   content: [{ type: "text" as const, text: JSON.stringify(value, null, 2) }],
@@ -25,7 +26,7 @@ const toolError = (error: unknown) => ({
 export function createMcpServer(client = new NycDataClient()): McpServer {
   const server = new McpServer({
     name: "nycdata",
-    version: "0.2.0",
+    version: VERSION,
   });
 
   server.registerTool(
