@@ -16,8 +16,8 @@
     }
   },
   "bin": {
-    "nycdata": "./dist/cli.js",
-    "nycdata-mcp": "./dist/mcp.js"
+    "nycdata": "dist/cli.js",
+    "nycdata-mcp": "dist/mcp.js"
   },
   "files": [
     "dist",
