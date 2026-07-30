@@ -150,6 +150,19 @@ The CLI is a thin presentation layer over reusable TypeScript modules:
 
 See [plan.md](./plan.md) for scope, principles, milestones, and deferred work.
 
+```mermaid
+flowchart LR
+    H[Developer or agent] -->|CLI command| C[CLI adapter]
+    H -->|MCP tool call| M[MCP server]
+    C --> V[Shared validation + query builder]
+    M --> V
+    V -->|catalog, metadata, or SODA request| S[NYC Socrata APIs]
+    S --> R[Bounded live response]
+    R --> P[Query / profile engine]
+    P --> F[JSON, CSV, table, or MCP result]
+    F --> H
+```
+
 ## Development
 
 ```bash
